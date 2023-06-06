@@ -312,8 +312,11 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
     }
     [_controllerView addSubview:self];
     
+    UIWindow *mainWindow = [UIApplication sharedApplication].delegate.window;
+    UIEdgeInsets safeAreaInsets = mainWindow.safeAreaInsets;
+    
     CGFloat selfW = CGRectGetWidth(_controllerView.frame);
-    CGFloat selfH = contentHeight;
+    CGFloat selfH = contentHeight + safeAreaInsets.bottom;
     CGFloat selfX = 0;
     CGFloat selfY = CGRectGetMaxY(_controllerView.frame);
     self.frame = CGRectMake(selfX, selfY, selfW, selfH);
@@ -329,7 +332,7 @@ static NSString * const kFSActionSheetCellIdentifier = @"kFSActionSheetCellIdent
         // constraint
         [_controllerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[self]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(self)]];
         [_controllerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[self]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(self)]];
-        self.heightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:contentHeight];
+        self.heightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:selfH];
         [_controllerView addConstraint:_heightConstraint];
     }];
 }

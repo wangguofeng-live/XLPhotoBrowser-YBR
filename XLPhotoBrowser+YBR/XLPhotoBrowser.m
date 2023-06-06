@@ -438,7 +438,11 @@
         default:
             break;
     }
-    CGFloat y = self.xl_height - size.height - 10;
+    
+    UIWindow *mainWindow = [UIApplication sharedApplication].delegate.window;
+    UIEdgeInsets safeAreaInsets = mainWindow.safeAreaInsets;
+    
+    CGFloat y = self.xl_height - size.height - 10 - safeAreaInsets.bottom;
     self.pageControl.frame = CGRectMake(x, y, size.width, size.height);
 }
 
