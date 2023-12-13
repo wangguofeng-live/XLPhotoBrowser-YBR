@@ -16,6 +16,7 @@
 }
 
 @property (nonatomic , strong) UIImageView  *photoImageView;
+@property (nonatomic , strong) UILabel *photoImageDescriptionLabel;
 @property (nonatomic , strong) XLProgressView *progressView;
 @property (nonatomic , strong) UILabel *stateLabel;
 @property (nonatomic, assign) BOOL hasLoadedImage;
@@ -56,19 +57,6 @@
     return _photoImageView;
 }
 
-- (UIScrollView *)scrollview
-{
-    if (!_scrollview) {
-        _scrollview = [[UIScrollView alloc] init];
-        [_scrollview addSubview:self.photoImageView];
-        _scrollview.delegate = self;
-        _scrollview.clipsToBounds = YES;
-        _scrollview.showsVerticalScrollIndicator = NO;
-        _scrollview.showsHorizontalScrollIndicator = NO;
-    }
-    return _scrollview;
-}
-
 - (UILabel *)stateLabel
 {
     if (_stateLabel == nil) {
@@ -82,6 +70,33 @@
         _stateLabel.textAlignment = NSTextAlignmentCenter;
     }
     return _stateLabel;
+}
+
+- (UIScrollView *)scrollview
+{
+    if (!_scrollview) {
+        _scrollview = [[UIScrollView alloc] init];
+        [_scrollview addSubview:self.photoImageView];
+        [_scrollview addSubview:self.photoImageDescriptionLabel];
+        _scrollview.delegate = self;
+        _scrollview.clipsToBounds = YES;
+        _scrollview.showsVerticalScrollIndicator = NO;
+        _scrollview.showsHorizontalScrollIndicator = NO;
+    }
+    return _scrollview;
+}
+
+- (UILabel *)photoImageDescriptionLabel
+{
+    if (_photoImageDescriptionLabel == nil) {
+        _photoImageDescriptionLabel = [[UILabel alloc] init];
+        _photoImageDescriptionLabel.font = [UIFont systemFontOfSize:16];
+        _photoImageDescriptionLabel.textColor = [UIColor whiteColor];
+//        _photoImageDescriptionLabel.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
+        _photoImageDescriptionLabel.numberOfLines = 0;
+        _photoImageDescriptionLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    return _photoImageDescriptionLabel;
 }
 
 - (XLProgressView *)progressView
@@ -238,9 +253,12 @@
  *
  *  @param url         图片的高清大图链接
  *  @param placeholder 占位的缩略图 / 或者是高清大图都可以
+ *  @param imageDescription 图片的描述
  */
-- (void)setShowHighQualityImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder
+- (void)setShowHighQualityImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder imageDescription:(NSString *)imageDescription
 {
+    self.photoImageDescriptionLabel.text = imageDescription;
+    
     if (!url) {
         [self setShowImage:placeholder];
         return;
@@ -298,6 +316,17 @@
     if (image == nil || image.size.height==0) {
         return;
     }
+    
+    UIWindow *mainWindow = [UIApplication sharedApplication].delegate.window;
+    UIEdgeInsets safeAreaInsets = mainWindow.safeAreaInsets;
+    
+//    CGFloat y = self.xl_height - size.height - 10 - safeAreaInsets.bottom;
+    
+    self.photoImageDescriptionLabel.xl_width = self.xl_width - 60;
+    [self.photoImageDescriptionLabel sizeToFit];
+    self.photoImageDescriptionLabel.xl_y = self.xl_height - self.photoImageDescriptionLabel.xl_height - 40 - safeAreaInsets.bottom;
+    self.photoImageDescriptionLabel.xl_centerX = self.xl_width / 2.0f;
+    
     CGFloat imageWidthHeightRatio = image.size.width / image.size.height;
     self.photoImageView.xl_width = self.xl_width;
     self.photoImageView.xl_height = self.xl_width / imageWidthHeightRatio;

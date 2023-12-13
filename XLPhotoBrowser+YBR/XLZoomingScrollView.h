@@ -58,8 +58,9 @@
  *
  *  @param url         图片的高清大图链接
  *  @param placeholder 占位的缩略图 / 或者是高清大图都可以
+ *  @param imageDescription 图片的描述
  */
-- (void)setShowHighQualityImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder;
+- (void)setShowHighQualityImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder imageDescription:(NSString *)imageDescription;
 /**
  *  显示图片
  *

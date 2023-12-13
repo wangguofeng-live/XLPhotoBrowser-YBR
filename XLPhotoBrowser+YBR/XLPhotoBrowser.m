@@ -637,7 +637,7 @@
     zoomingScrollView.frame = CGRectMake((self.scrollView.xl_width) * index, 0, self.xl_width, self.xl_height);
     self.currentImageIndex = index;
     if ([self highQualityImageURLForIndex:index]) { // 如果提供了高清大图数据源,就去加载
-        [zoomingScrollView setShowHighQualityImageWithURL:[self highQualityImageURLForIndex:index] placeholderImage:[self placeholderImageForIndex:index]];
+        [zoomingScrollView setShowHighQualityImageWithURL:[self highQualityImageURLForIndex:index] placeholderImage:[self placeholderImageForIndex:index] imageDescription:[self imageDescriptionForIndex:index]];
     } else if ([self assetForIndex:index]) {
         ALAsset *asset = [self assetForIndex:index];
         CGImageRef imageRef = asset.defaultRepresentation.fullScreenImage;
@@ -711,6 +711,19 @@
         } else {
             return nil;
         }
+    }
+    return nil;
+}
+
+/**
+ *  获取指定位置的描述,和外界的数据源交互
+ */
+- (NSString *)imageDescriptionForIndex:(NSInteger)index
+{
+    if (self.datasource && [self.datasource respondsToSelector:@selector(photoBrowser:imageDescriptionForIndex:)]) {
+        NSString *descrition = [self.datasource photoBrowser:self imageDescriptionForIndex:index];
+        
+        return descrition;
     }
     return nil;
 }
@@ -977,6 +990,9 @@
  */
 - (void)dismiss
 {
+    if (_delegate && [_delegate respondsToSelector:@selector(photoBrowser:willDismissAtCurrentImageIndex:)]) {
+        [_delegate photoBrowser:self willDismissAtCurrentImageIndex:self.currentImageIndex];
+    }
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     [UIView animateWithDuration:XLPhotoBrowserHideImageAnimationDuration animations:^{
         self.alpha = 0.0;

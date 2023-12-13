@@ -25,6 +25,14 @@
  */
 - (void)photoBrowser:(XLPhotoBrowser *)browser clickActionSheetIndex:(NSInteger)actionSheetindex currentImageIndex:(NSInteger)currentImageIndex;
 
+/**
+ *  即将关闭
+ *
+ *  @param browser 图片浏览器
+ *  @param currentImageIndex    当前展示的图片索引
+ */
+- (void)photoBrowser:(XLPhotoBrowser *)browser willDismissAtCurrentImageIndex:(NSInteger)currentImageIndex;
+
 @end
 
 @protocol XLPhotoBrowserDatasource <NSObject>
@@ -49,6 +57,15 @@
  *  @return 返回高清大图索引
  */
 - (NSURL *)photoBrowser:(XLPhotoBrowser *)browser highQualityImageURLForIndex:(NSInteger)index;
+
+/**
+ *  返回图片的描述
+ *
+ *  @param browser 浏览器
+ *  @param index   位置索引
+ */
+- (NSString *)photoBrowser:(XLPhotoBrowser *)browser imageDescriptionForIndex:(NSInteger)index;
+
 /**
  *  返回指定位置的ALAsset对象,从其中获取图片
  *
